@@ -1,0 +1,560 @@
+openapi: 3.0.0
+info:
+  description: "Library Management System API"
+  version: "1.0.0"
+  title: "LMS API"
+  contact:
+    name: "Your Name"
+    email: "your.email@example.com"
+servers:
+  - url: "http://localhost:8080"
+    description: "Local server"
+tags:
+  - name: books
+    description: All Operations on books
+  - name: users
+    description: User Details
+  - name: loans
+    description: Loan Details
+  - name: publishers
+    description: Publisher Details
+paths:
+  /books:
+    get:
+      tags:
+        - books
+      summary: "Get all books"
+      description: "Returns a list of all books in the library."
+      responses:
+        '200':
+          description: "A list of books."
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Book"
+    post:
+      tags:
+        - books
+      summary: "Add a new book"
+      description: "Adds a new book to the library."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Book"
+      responses:
+        '200':
+          description: "The newly added book."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        '400':
+          description: "Invalid input."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+     
+  /books/{id}:
+    get:
+      tags:
+        - books
+      summary: "Get a book by ID"
+      description: "Returns a book by ID."
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of book to return"
+          required: true
+          schema:
+            type: "integer"
+      responses:
+        '200':
+          description: "The requested book."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        '404':
+          description: "Book not found."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+     
+    post:
+      tags:
+        - books
+      summary: "Update a book by ID"
+      description: "Updates a book by ID."
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of book to update"
+          required: true
+          schema:
+            type: "integer"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Book"
+      responses:
+        '200':
+          description: "The updated book."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        '404':
+          description: "Book not found."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      tags:
+        - books
+      summary: "Delete a book by ID"
+      description: "Deletes a book by ID."
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of book to delete"
+          required: true
+          schema:
+            type: "integer"
+      responses:
+        '204':
+          description: "Book deleted."
+  /users:
+    get:
+      tags:
+        - users
+      summary: "Get all the users"
+      description: "Returns a list of all users of the library."
+      responses:
+        '200':
+          description: "A list of users."
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/User"
+    post:
+      tags:
+        - users
+      summary: "Add a new user"
+      description: "Adds a new user to the library."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        '200':
+          description: "The newly added user."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        '400':
+          description: "Invalid input."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/userError"
+                  
+  /users/{userid}:
+    get:
+      tags:
+        - users
+      summary: "Get a user by ID"
+      description: "Returns a user by ID."
+      parameters:
+        - name: "userid"
+          in: "path"
+          description: "ID of user to return"
+          required: true
+          schema:
+            type: "integer"
+      responses:
+        '200':
+          description: "The requested user."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        '404':
+          description: "Book not found."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/userError"
+                
+    post:
+      tags:
+        - users
+      summary: "Update a user by ID"
+      description: "Updates a user by ID."
+      parameters:
+        - name: "userid"
+          in: "path"
+          description: "ID of user to update"
+          required: true
+          schema:
+            type: "integer"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        '200':
+          description: "The updated user."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        '404':
+          description: "User not found."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/userError"
+    delete:
+      tags:
+        - users
+      summary: "Delete a user by ID"
+      description: "Deletes a user by ID."
+      parameters:
+        - name: "userid"
+          in: "path"
+          description: "ID of user to delete"
+          required: true
+          schema:
+            type: "integer"
+      responses:
+        '204':
+          description: "user deleted."
+          
+  /loans:
+    get:
+      tags:
+        - loans
+      summary: "Get all loan details"
+      description: "Returns a list of all loans in the library"
+      responses:
+        '200':
+          description: "A list of loans."
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Book"
+    post:
+      tags:
+        - loans
+      summary: "Add a new loan details of a user"
+      description: "Adds a new loan detail to the library."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Book"
+      responses:
+        '200':
+          description: "The newly added loan details"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/generateLoan"
+        '400':
+          description: "Invalid input."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+                
+  /loans/{loanId}:
+    get:
+      tags:
+        - loans
+      summary: "Get a loan by ID"
+      description: "Returns loan details by ID."
+      parameters:
+        - name: "loanId"
+          in: "path"
+          description: "ID of loan to return"
+          required: true
+          schema:
+            type: "integer"
+      responses:
+        '200':
+          description: "The requested user."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Loan"
+        '404':
+          description: "Details of the loan not found."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/loanError"
+    post:
+      tags:
+        - loans
+      summary: "Update a loan by ID"
+      description: "Updates a user by ID."
+      parameters:
+        - name: "loanId"
+          in: "path"
+          description: "ID of user to update"
+          required: true
+          schema:
+            type: "integer"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Loan"
+      responses:
+        '200':
+          description: "The updated user."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/generateLoan"
+        '404':
+          description: "User not found."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/loanError"
+    delete:
+      tags:
+        - loans
+      summary: "Delete a user by ID"
+      description: "Deletes a user by ID."
+      parameters:
+        - name: "loanId"
+          in: "path"
+          description: "ID of loan to delete"
+          required: true
+          schema:
+            type: "integer"
+      responses:
+        '204':
+          description: "loan deleted."
+  /publishers:
+    description: about publishers
+    post:
+      tags:
+        - publishers
+      description: add publisher
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Publishers"
+    get:
+      tags:
+        - publishers
+      description: get all Publishers
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Publishers"
+  /publishers/{id}:
+    get:
+      tags:
+        - publishers
+      description: get publisher details by id
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Publishers"
+      parameters:
+        - name: id
+          in: path
+          description: id of publisher
+          content:
+            application/json:
+              schema:
+                type: integer
+          required: true
+
+  /publishers/delete/{id}:
+    delete:
+      tags:
+        - publishers
+      description: get publisher details by id
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Publishers"
+      parameters:
+        - name: id
+          in: path
+          description: id of publisher
+          content:
+            application/json:
+              schema:
+                type: integer
+          required: true
+  
+components:
+  schemas:
+  # books
+    Book:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+        title:
+          type: "string"
+        author:
+          type: "string"
+        isbn:
+          type: "string"
+        description:
+          type: "string" 
+        quantity:
+          type: "integer"
+        available:
+          type: "integer"
+    Error:
+      type: "object"
+      properties:
+        code:
+          type: "integer"
+        message:
+          type: "string"
+          
+  # users
+    User:
+      type: "object"
+      properties:
+        userid:
+          type: "integer"
+          example: 3
+        First Name:
+          type: "string"
+          example: "sravana"
+        Last Name:
+          type: "string"
+          example: "sandhya"
+        gender:
+          type: "string"
+          example: "Female"
+        email:
+          type: "string"
+          example:  "example@gmail.com"
+        mobile number:
+          type: "string"
+          example: "9876543210"
+    userError:
+      type: "object"
+      properties:
+        code:
+          type: "integer"
+        message:
+          type: "string"
+          
+  # loans
+    Loan:
+      type: object
+      properties:
+          id:
+            type: integer
+          bookid: 
+            type: integer
+            format: int32
+          title: 
+            type: string
+            format: int64
+          authorname:
+            type: string
+          date:
+            type: string
+            format: date
+          period:
+            type: integer
+          isActive:
+            type: boolean
+            default: false
+      required:
+        - id
+        - bookid
+        - date
+    generateLoan:
+      type: object
+      properties:
+        loanid:
+          type: "integer"
+          example: 3
+        email:
+          type: string
+        books:
+          type: array
+          items:
+            allOf:
+              - $ref: "#/components/schemas/Loan"
+    loanError:
+      type: "object"
+      properties:
+        code:
+          type: "integer"
+        message:
+          type: "string"
+  # publishers
+    Publishers:
+      description: publishers  schema
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name: 
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        books:
+          type: array
+          items:
+            $ref: "#/components/schemas/Book"
+        phone: 
+          type: string
+      required:
+        - id
+        - email
+        - password
+
+    
